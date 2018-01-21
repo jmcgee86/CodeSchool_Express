@@ -24,10 +24,43 @@ app.get('/date', function(request, response){
   response.send("Today is " + new Date());
 })
 
-app.get('/cities', function(request,response){
-  var cities = ['Providence', 'Boston', 'Portland', 'Burlington'];
-  response.json(cities);
+var cities = {
+  'Providence': 'Rhode Island',
+  'Boston': 'Massachusetts',
+  'Portland': 'Maine',
+  'Burlington': 'Vermont',
+  'Hartford': 'Connecticut'
+};
+
+app.param('name', function(request, response, next){
+  request.cityName = parseCityName(request.params.name);
+  next();
 });
+
+app.get('/cities', function(request,response){
+  if(request.query.limit > cities.length){
+    response.send("The limit cannot exceed " +cities.length)
+  }
+  else if (request.query.limit > 0){
+    response.json(cities.slice(0, request.query.limit));
+  }else{
+  response.json(Object.keys(cities));
+  }
+});
+
+app.get('/cities/:name', function(request, response){
+  var state = cities[request.cityName];
+  if (!state){
+    response.status(404).json('City not found');
+  }else{
+    response.json(state);
+  }
+});
+
+function parseCityName(name) {
+  var parsedName = name[0].toUpperCase() + name.slice(1).toLowerCase();
+  return parsedName;
+}
 
 app.listen(process.env.PORT, function(){
     console.log("Express is Running");
