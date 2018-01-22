@@ -62,6 +62,10 @@ function parseCityName(name) {
   return parsedName;
 }
 
+app.post('/cities', function (request, response) {
+  var city;
+});
+
 app.listen(process.env.PORT, function(){
     console.log("Express is Running");
 });
