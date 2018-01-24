@@ -81,6 +81,20 @@ var createCity = function(city, state){
     return city; 
 };
 
+// app.delete('/cities/:name', function(request, response){
+//   if (cities[request.cityName]){
+//   delete cities[request.cityName];
+//   response.sendStatus(200);
+//   }else{
+//     response.sendStatus(404);
+//   }
+// });
+
+app.delete('/cities/:name', function(request, response){
+    delete cities[request.cityName];
+   response.sendStatus(200);
+ });
+
 app.listen(process.env.PORT, function(){
     console.log("Express is Running");
 });
