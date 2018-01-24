@@ -34,33 +34,9 @@ var cities = {
   'Hartford': 'Connecticut'
 };
 
-// app.post('/cities', parseUrlencoded, function (request, response) {
-//   var newCity = createCity(request.body.city, request.body.state);
-//   cities[newCity.city] = newCity.state;
-//   response.status(201).json(newCity.name);
-// });
-
-app.post('/cities', parseUrlencoded, function(request, response){
-  var newCity = request.body;
-  cities[newCity.city] = newCity.state;
-  response.status(201).json(newCity.name);
-})
-
 app.param('name', function(request, response, next){
   request.cityName = parseCityName(request.params.name);
   next();
-});
-
-
-app.get('/cities', function(request,response){
-  if(request.query.limit > cities.length){
-    response.send("The limit cannot exceed " + cities.length)
-  }
-  else if (request.query.limit > 0){
-    response.json(cities.slice(0, request.query.limit));
-  }else{
-  response.json(Object.keys(cities));
-  }
 });
 
 app.get('/cities/:name', function(request, response){
@@ -77,11 +53,31 @@ function parseCityName(name) {
   return parsedName;
 }
 
+app.get('/cities', function(request,response){
+  if(request.query.limit > cities.length){
+    response.send("The limit cannot exceed " + cities.length)
+  }
+  else if (request.query.limit > 0){
+    response.json(cities.slice(0, request.query.limit));
+  }else{
+  response.json(Object.keys(cities));
+  }
+});
+
+app.post('/cities', parseUrlencoded, function(request, response){
+//  var newCity = request.body;
+//  cities[newCity.city] = newCity.state;
+    var newCity = createCity(request.body.city, request.body.state);
+  response.status(201).json(newCity);
+  console.log('created a new city ' +newCity.name);
+});
+
+var createCity = function(city, state){
+    cities[city] = state;
+    return city; 
+};
+
+
 app.listen(process.env.PORT, function(){
     console.log("Express is Running");
 });
-
-var createCity = function(name, description){
-  cities[name] = description;
-  return name;
-}
