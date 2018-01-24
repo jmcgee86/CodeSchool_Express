@@ -67,16 +67,19 @@ app.get('/cities', function(request,response){
 app.post('/cities', parseUrlencoded, function(request, response){
 //  var newCity = request.body;
 //  cities[newCity.city] = newCity.state;
+if (request.body.city.length>=4 && request.body.state.length>=2){
     var newCity = createCity(request.body.city, request.body.state);
-  response.status(201).json(newCity);
-  console.log('created a new city ' +newCity.name);
+    response.status(201).json(newCity);
+  }else{
+    console.log('Please enter valid city and state');
+    response.status(400).json('Please enter valid city and state')
+  }
 });
 
 var createCity = function(city, state){
     cities[city] = state;
     return city; 
 };
-
 
 app.listen(process.env.PORT, function(){
     console.log("Express is Running");
